@@ -48,7 +48,7 @@ export function ProductCard({ data, layout = 'grid', maxTags = 5 }: ProductCardP
       onClick={() => navigate(data.to)}
     >
       <div className={cx('relative p-4', !isList && 'pb-0', isList && 'pb-0 lg:pb-4 lg:w-[384px] lg:shrink-0')}>
-        <div className={cx('overflow-hidden rounded-image shadow-image', isList ? 'aspect-[352/264] lg:h-[264px] lg:aspect-auto' : 'h-[216px]')}>
+        <div className={cx('overflow-hidden rounded-image shadow-image', isList ? 'aspect-[352/264] max-h-[320px] w-full lg:h-[264px] lg:max-h-none lg:aspect-auto' : 'h-[216px]')}>
           <img
             src={cdnImage(data.thumbnail)}
             alt={data.title}
