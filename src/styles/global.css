@@ -1,0 +1,69 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Typography scale copied from the source site (global element styles). */
+@layer base {
+  * {
+    font-family: Archivo, sans-serif;
+    box-sizing: border-box;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    background: var(--base-white);
+    color: var(--black);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1 { font-size: 80px; line-height: 90px; font-weight: 700; }
+  h2 { font-size: 60px; line-height: 72px; font-weight: 700; }
+  h3 { font-size: 48px; line-height: 60px; font-weight: 700; }
+  h4 { font-size: 36px; line-height: 44px; font-weight: 700; color: var(--gray-900); }
+  h5 { font-size: 30px; line-height: 38px; font-weight: 700; color: var(--gray-900); }
+  h6 { font-size: 24px; line-height: 32px; font-weight: 700; }
+  p { margin: 0; overflow-wrap: break-word; }
+  button { font: inherit; cursor: pointer; }
+  a { color: inherit; text-decoration: inherit; }
+  img { max-width: 100%; }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 8px;
+  }
+  p.xl { font-size: 20px; line-height: 30px; font-weight: 400; }
+  p.lg { font-size: 18px; line-height: 28px; font-weight: 400; color: var(--gray-900); }
+  p.md { font-size: 16px; line-height: 24px; font-weight: 400; color: var(--gray-600); }
+  p.sm { font-size: 14px; line-height: 20px; font-weight: 400; }
+  .subheading { color: var(--gray-700); }
+  .subheading.lg { font-size: 20px; line-height: 30px; font-weight: 700; }
+  .subheading.md { font-size: 18px; line-height: 28px; font-weight: 700; }
+  .subheading.sm { font-size: 16px; line-height: 24px; font-weight: 700; }
+  .label-xl { font-size: 20px; line-height: 30px; font-weight: 500; }
+  .label-lg { font-size: 18px; line-height: 28px; font-weight: 500; }
+  .label-md { font-size: 16px; line-height: 24px; font-weight: 500; }
+  .label-sm { font-size: 14px; line-height: 20px; font-weight: 500; }
+  .label-xs { font-size: 12px; line-height: 18px; font-weight: 500; }
+  .section-bg {
+    background-image: url('/assets/images/section-background.png');
+    background-repeat: repeat;
+  }
+  /* Rich text from the CMS (Editor.js blocks and legal pages). */
+  .rich-text a { color: var(--primary-dark); text-decoration: underline; }
+  .rich-text ul { list-style: disc; padding-left: 24px; }
+  .rich-text ol { list-style: decimal; padding-left: 24px; }
+  .rich-text b, .rich-text strong { font-weight: 700; }
+  .rich-text i, .rich-text em { font-style: italic; }
+}
+
+@media (max-width: 1024px) {
+  h4 { font-size: 30px; line-height: 38px; }
+  h5 { font-size: 24px; line-height: 32px; }
+}
