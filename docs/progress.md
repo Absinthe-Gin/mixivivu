@@ -53,8 +53,18 @@ Last update: 2026-11-16. Branch: `main`, remote `origin` (GitHub).
 - Tablet: listing image height capped at 320px.
 - Docs: `architecture.md`, `implementation-plan.md`, `progress.md`, README.
 
+### M5 — AI assistant
+
+- Chat widget on every page, server endpoint with Claude tool use
+  (ship/hotel search and details, help search), streaming answers, basic
+  keyword mode without credentials, rate limiting and input limits.
+- Tests: 39 passed (chat UI with mocked stream, API validation, basic-mode
+  answer, mobile full-screen). The AI mode was not exercised live: no Claude
+  credentials on this machine. Set `ANTHROPIC_API_KEY` in `.env` to enable it.
+
 ## Open issues / known gaps
 
+- Chatbot AI mode is untested against the live API (no credentials during development); basic mode is tested.
 - Flight results need a live fare provider; the clone shows the search summary
   and the hotline instead of inventing fares.
 - Bookings, contact requests and reviews are stored in `localStorage` only (no backend).
