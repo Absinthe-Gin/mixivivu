@@ -11,6 +11,7 @@ import { ProductCard } from '@/features/catalog/components/ProductCard';
 import { SearchBox } from '@/features/catalog/components/SearchBox';
 import { useShipLookups } from '@/features/catalog/hooks';
 import { shipToCard } from '@/features/catalog/mappers';
+import { buildSearchQuery } from '@/features/catalog/query';
 import { CategoryCard } from '@/features/home/components/CategoryCard';
 import { PartnerLogos } from '@/features/home/components/PartnerLogos';
 import { Testimonials } from '@/features/home/components/Testimonials';
@@ -80,7 +81,7 @@ export function HomePage() {
         <SectionHeader layout="center" title={copy.destinationsTitle} description={copy.destinationsDescription} />
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {lookups.categories.map((c) => (
-            <CategoryCard key={c.id} category={c} />
+            <CategoryCard key={c.id} name={c.name} image={c.image} to={`${ROUTES.shipSearch}?${buildSearchQuery({ location: c.id })}`} />
           ))}
         </div>
       </section>

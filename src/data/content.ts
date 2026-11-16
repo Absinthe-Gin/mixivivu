@@ -57,6 +57,19 @@ export const HOME_COPY = {
     popularDescription:
       'Không gian nghỉ dưỡng sang trọng, tiện nghi và hiện đại cùng dịch vụ chuyên nghiệp, Mixi Vivu tự hào mang đến những trải nghiệm hoàn hảo cho kỳ nghỉ của bạn, giúp bạn tận hưởng từng khoảnh khắc một cách đáng nhớ và trọn vẹn nhất!',
     viewAll: 'Xem tất cả Khách sạn',
+    destinationsDescription: 'Trải nghiệm sự sang trọng và thư giãn tại Khách sạn: Hành trình đến thiên đường nghỉ dưỡng hoàn hảo',
+    partnersTitle: 'Đối tác Cùng các\nKhách Sạn Lớn',
+    partnersDescription: 'Đối tác hàng đầu với các khách sạn danh tiếng: Ưu đãi độc quyền dành riêng cho bạn',
+    blogTitle: 'Khám phá Sự đặc sắc\nvà Cập nhật tin tức mới nhất',
+    blogDescription: 'Những điểm đến hấp dẫn cùng nhiều thông tin cần thiết cho chuyến du lịch tuyệt vời của bạn.',
+    /** Cities featured on /khach-san (ids and images from the source page data). */
+    destinations: [
+      { id: '66717f39b341a1ec8fb623c1', name: 'Ninh Bình', image: 'hotel/location/hotel/st0yrxsvr338xn91.webp' },
+      { id: '66717f39b341a1ec8fb623d9', name: 'Đà Nẵng', image: 'hotel/location/hotel/2johsh9rc8z1p9f1.webp' },
+      { id: '66deddf173736d745577a352', name: 'Nha Trang', image: 'tour/location/images/m24xg4lftaykx77i.webp' },
+      { id: '66df14ae73736d745577a916', name: 'Phú Quốc', image: 'hotel/location/hotel/kb00x3gqu3jvg574.webp' },
+      { id: '66fe61bf0b818e5ee74ce9df', name: 'Hạ Long', image: 'hotel/location/hotel/qon6fo1lgky50tcy.webp' },
+    ],
   },
   blog: {
     title: 'Hạ Long: Khám phá Sự đặc sắc\nvà Cập nhật tin tức mới nhất',
