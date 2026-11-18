@@ -337,3 +337,90 @@ export function searchHelp(query: string, limit = 4) {
     .map((x) => x.c);
   return scored.length ? { results: scored } : { results: [], note: 'Không tìm thấy nội dung phù hợp trong tài liệu hướng dẫn.' };
 }
+
+// ---------- lookups and aggregates used by agent tools ----------
+
+/** Title and base price of a catalog item, or null when the slug is unknown. */
+export function lookupItem(type: 'ship' | 'hotel', slug: string): { title: string; price: number } | null {
+  const row = type === 'ship' ? ships().find((s) => s.slug === slug) : hotels().find((h) => h.slug === slug);
+  return row ? { title: row.title, price: row.price } : null;
+}
+
+const median = (xs: number[]) => {
+  if (!xs.length) return 0;
+  const s = [...xs].sort((a, b) => a - b);
+  const m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m] : Math.round((s[m - 1] + s[m]) / 2);
+};
+
+export type StatsGroup = 'destination' | 'rating_band' | 'city' | 'stars';
+
+/** Price statistics computed in code (never by the model), grouped as requested. */
+export function catalogStats(kind: 'ship' | 'hotel', groupBy?: StatsGroup) {
+  const rows: { group: string; price: number; score: number }[] =
+    kind === 'ship'
+      ? ships().map((s) => ({
+          group:
+            groupBy === 'rating_band'
+              ? s.numReviews
+                ? `${Math.floor(s.score)}-${Math.floor(s.score) + 1} điểm`
+                : 'chưa có đánh giá'
+              : groupBy === 'destination'
+                ? (nameOf(categories(), s.categoryId) ?? 'khác')
+                : 'tất cả',
+          price: s.price,
+          score: s.score,
+        }))
+      : hotels().map((h) => ({
+          group: groupBy === 'city' ? (h.cityName ?? 'khác') : groupBy === 'stars' ? (h.standard ? `${h.standard} sao` : 'chưa xếp hạng') : 'tất cả',
+          price: h.price,
+          score: h.score,
+        }));
+  const groups = new Map<string, number[]>();
+  for (const r of rows) if (r.price > 0) groups.set(r.group, [...(groups.get(r.group) ?? []), r.price]);
+  return {
+    kind,
+    group_by: groupBy ?? 'none',
+    unit: kind === 'ship' ? 'VND/khách' : 'VND/phòng/đêm',
+    total_items: rows.length,
+    groups: [...groups.entries()]
+      .map(([group, prices]) => ({
+        group,
+        count: prices.length,
+        min: Math.min(...prices),
+        max: Math.max(...prices),
+        average: Math.round(prices.reduce((a, b) => a + b, 0) / prices.length),
+        median: median(prices),
+      }))
+      .sort((a, b) => b.count - a.count),
+  };
+}
+
+export interface CorpusDoc {
+  sourceType: 'blog' | 'help';
+  ref: string;
+  title: string;
+  link: string;
+  text: string;
+  metadata?: Record<string, unknown>;
+}
+
+/** Public site content for the RAG index: blog articles plus help/FAQ/policy chunks. */
+export function publicCorpus(): CorpusDoc[] {
+  const docs: CorpusDoc[] = [];
+  for (const b of load<{ slug: string; title: string; description: string; date: string; type: string }[]>('blogs.json') ?? []) {
+    const detail = load<{ content: Block[] }>(`blogs/${b.slug}.json`);
+    const body = detail ? blocksToText(detail.content, 20_000) : '';
+    docs.push({
+      sourceType: 'blog',
+      ref: b.slug,
+      title: b.title,
+      link: `/blog-detail/${encodeURIComponent(b.slug)}`,
+      text: `${b.title}\n${b.description}\n${body}`,
+      metadata: { date: b.date, category: b.type },
+    });
+  }
+  helpIndex ??= buildHelpIndex();
+  helpIndex.forEach((c, i) => docs.push({ sourceType: 'help', ref: `help-${i}`, title: c.source, link: c.link, text: c.text }));
+  return docs;
+}

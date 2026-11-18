@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "typecheck": "tsc -b",
     "test:e2e": "playwright test",
-    "start": "node server/serve.ts"
+    "start": "node server/serve.ts",
+    "test:unit": "node --test --disable-warning=ExperimentalWarning \"server/test/*.test.ts\"",
+    "test": "npm run test:unit && npm run test:e2e"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.8.0",
