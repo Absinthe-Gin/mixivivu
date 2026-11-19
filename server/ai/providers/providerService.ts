@@ -9,7 +9,7 @@
  * Business code asks this service for an `LLMProvider`; it never imports a
  * vendor SDK directly.
  */
-import { type Db, now, parseJson } from '../../shared/db.ts';
+import { type Db, now, parseJson, transaction } from '../../shared/db.ts';
 import { canEncryptSecrets, decryptSecret, encryptSecret, newId } from '../../shared/crypto.ts';
 import { ApiError } from '../../shared/http.ts';
 import { AnthropicProvider } from './anthropic.ts';
@@ -203,6 +203,10 @@ export class ProviderService {
 
   create(input: ProviderConfigInput): PublicProviderConfig {
     if (!input.name || !input.type || !input.model) throw new ApiError(400, 'Cần tên, loại provider và model.', 'validation');
+    return transaction(this.db, () => this.insert(input));
+  }
+
+  private insert(input: ProviderConfigInput): PublicProviderConfig {
     const id = newId();
     const t = now();
     this.db
@@ -210,7 +214,7 @@ export class ProviderService {
         `INSERT INTO ai_provider_configs (id, name, provider_type, base_url, model, models, api_key_encrypted, temperature, max_tokens, context_window, timeout_ms, enabled, is_default, created_at, updated_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)`,
       )
-      .run(id, input.name, input.type, null, input.model, '[]', null, null, 2048, 16000, 60000, 1, t, t);
+      .run(id, input.name!, input.type!, null, input.model!, '[]', null, null, 2048, 16000, 60000, 1, t, t);
     return this.update(id, input);
   }
 

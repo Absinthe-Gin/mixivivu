@@ -98,7 +98,8 @@ export const MIGRATIONS: Migration[] = [
         title TEXT NOT NULL,
         pinned INTEGER NOT NULL DEFAULT 0,
         archived_at TEXT,
-        context_reset_at TEXT,             -- messages before this are history only, not model context
+        context_reset_at TEXT,             -- when the user cleared the context (display)
+        context_reset_seq INTEGER NOT NULL DEFAULT 0, -- messages with seq <= this are history only, not model context
         last_message_at TEXT NOT NULL,
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
