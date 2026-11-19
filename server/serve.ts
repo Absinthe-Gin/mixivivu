@@ -1,14 +1,14 @@
 /**
  * Production server: serves dist/ under the app base path and the chat API.
  *   npm run build && npm start
- * Requires Node 22.18+ (runs TypeScript directly). Set ANTHROPIC_API_KEY (or
- * log in with `ant auth login`) to enable AI answers.
+ * Requires Node 22.18+ (runs TypeScript directly, uses node:sqlite).
+ * AI providers are configured with environment variables (see .env.example).
  */
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { extname, join, normalize, sep } from 'node:path';
 import { APP_BASE_PATH } from '../app.config.ts';
-import { handleChat } from './chatHandler.ts';
+import { createApi } from './api.ts';
 
 if (existsSync('.env')) process.loadEnvFile('.env');
 
@@ -27,10 +27,12 @@ const TYPES: Record<string, string> = {
   '.woff2': 'font/woff2',
 };
 
-createServer((req, res) => {
+const api = createApi({ basePath: APP_BASE_PATH });
+
+createServer(async (req, res) => {
   const url = new URL(req.url ?? '/', 'http://localhost');
-  if (url.pathname === `${APP_BASE_PATH}api/chat`) {
-    handleChat(req, res).catch(() => res.end());
+  if (url.pathname.startsWith(`${APP_BASE_PATH}api/`)) {
+    await api.handle(req, res);
     return;
   }
   if (!url.pathname.startsWith(APP_BASE_PATH)) {

@@ -1,15 +1,17 @@
 import type { Connect, Plugin } from 'vite';
-import { handleChat } from './chatHandler.ts';
+import { type Api, createApi } from './api.ts';
 
-/** Serves POST {base}api/chat from the Vite dev and preview servers. */
-export function chatApiPlugin(base: string): Plugin {
-  const path = `${base}api/chat`;
+/** Serves {base}api/* (auth + assistant) from the Vite dev and preview servers. */
+export function apiPlugin(base: string): Plugin {
+  // Created on first request so loading the Vite config never opens the database.
+  let api: Api | null = null;
   const middleware: Connect.NextHandleFunction = (req, res, next) => {
-    if (req.url?.split('?')[0] !== path) return next();
-    handleChat(req, res).catch(next);
+    if (!req.url?.startsWith(`${base}api/`)) return next();
+    api ??= createApi({ basePath: base });
+    api.handle(req, res).then((handled) => handled || next(), next);
   };
   return {
-    name: 'mixivivu-chat-api',
+    name: 'mixivivu-api',
     configureServer: (server) => {
       server.middlewares.use(middleware);
     },
