@@ -16,6 +16,10 @@ function page<K extends string>(loader: () => Promise<Record<K, ComponentType>>,
 
 export const router = createBrowserRouter(
   [
+    // Full-screen assistant app (own layout, no site header/footer).
+    { path: 'tro-ly', element: page(() => import('@/features/assistant/pages/AssistantPage'), 'AssistantPage') },
+    { path: 'tro-ly/cai-dat', element: page(() => import('@/features/assistant/pages/AssistantSettingsPage'), 'AssistantSettingsPage') },
+    { path: 'tro-ly/:conversationId', element: page(() => import('@/features/assistant/pages/AssistantPage'), 'AssistantPage') },
     {
       element: <MainLayout />,
       children: [

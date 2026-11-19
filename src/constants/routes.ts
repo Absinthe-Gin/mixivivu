@@ -21,4 +21,5 @@ export const ROUTES = {
   privacy: '/chinh-sach-rieng-tu',
   guide: '/huong-dan-su-dung',
   payment: '/hinh-thuc-thanh-toan',
+  assistant: '/tro-ly',
 } as const;
