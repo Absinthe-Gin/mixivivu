@@ -99,36 +99,9 @@ CMS HTML (blog bodies, legal pages, FAQ answers) comes from a third party, so
 `utils/sanitizeHtml.ts` whitelists formatting tags and safe attributes before
 it is injected.
 
-## AI assistant (chatbot)
+## AI assistant
 
-A floating "Hỏi Mixivivu" widget (`src/features/chat/`) helps users find
-ships and hotels and explains how to use the site. Answers stream from
-`POST {base}api/chat`, served by the Vite dev/preview servers through
-`server/vitePlugin.ts`, and in production by `server/serve.ts` (`npm start`).
-
-```
-browser (ChatWidget) --NDJSON stream--> server/chatHandler.ts
-                                           |-- Claude (claude-opus-5-5) via @anthropic-ai/sdk tool runner
-                                           |     tools: search_ships, get_ship_details, search_hotels,
-                                           |            get_hotel_details, search_help
-                                           |-- server/catalog.ts  (reads public/data, help index)
-                                           '-- server/basicMode.ts (keyword answers when no credentials)
-```
-
-- **Grounding:** every price, room and policy comes from a tool reading
-  `public/data`; the system prompt forbids invented facts and requires links
-  from the tools' `link` field (rendered as router links by `Markdown.tsx`).
-- **Help search:** `search_help` ranks site how-to entries (`server/siteGuide.ts`),
-  both FAQ pages and the policy pages with IDF-weighted keyword matching.
-- **Model settings:** `claude-opus-5-5`, effort `low` (chat with lookups),
-  streaming tool runner with `eager_input_streaming`, prompt caching on the
-  stable system prompt + tools, and server-side refusal fallbacks
-  (`fallbacks: "default"`). Earlier turns are sent as plain text.
-- **Safety and cost limits:** the API key stays on the server (`.env`, never
-  bundled); 20 requests per IP per 5 minutes; at most 20 turns and 2,000
-  characters per question; the assistant never collects phone numbers or
-  e-mails in chat.
-- **Basic mode:** with no Claude credentials (or `MIXIVIVU_CHAT_MODE=basic`)
-  the same endpoint answers with keyword search, so the widget always works.
-- **Client state:** history lives in `sessionStorage`; the widget stays open
-  across route changes.
+The assistant is an agent with its own server modules (`server/ai/`,
+`server/auth/`, `server/domain/`, SQLite storage) and UI
+(`src/features/assistant/`). The full design is in
+[`docs/ai-assistant/architecture.md`](ai-assistant/architecture.md).

@@ -62,9 +62,14 @@ Last update: 2026-11-16. Branch: `main`, remote `origin` (GitHub).
   answer, mobile full-screen). The AI mode was not exercised live: no Claude
   credentials on this machine. Set `ANTHROPIC_API_KEY` in `.env` to enable it.
 
+### M6 — AI agent (branch `feat/ai-agent`)
+
+- Chatbot replaced by an agent with providers, tools, confirmations, memory,
+  RAG, accounts and SQLite. Details and results: `docs/ai-assistant/progress.md`.
+
 ## Open issues / known gaps
 
-- Chatbot AI mode is untested against the live API (no credentials during development); basic mode is tested.
+- Assistant Claude path untested live (no credentials); tested live with local Ollama.
 - Flight results need a live fare provider; the clone shows the search summary
   and the hotline instead of inventing fares.
 - Bookings, contact requests and reviews are stored in `localStorage` only (no backend).

@@ -18,26 +18,30 @@ does not clash with other local projects. Both are set in `app.config.ts`.
 
 ## AI assistant
 
-The "Hỏi Mixivivu" chat widget answers questions about ships, hotels and how
-to use the site, using Claude with tools over the site data.
+An agent that searches ships and hotels, plans trips, keeps notes,
+favorites and memories, and answers from blog/help content and uploaded
+documents. Full-screen at `/tro-ly`, settings at `/tro-ly/cai-dat`, and the
+"Hỏi Mixivivu" widget on every page. Actions that change data show a
+confirmation card first.
 
 ```bash
-cp .env.example .env     # then set ANTHROPIC_API_KEY
-npm run dev              # chat API at /mixivivu-clone/api/chat
-npm run build && npm start   # production server on port 5290 (Node 22.18+)
+cp .env.example .env     # set a provider: ANTHROPIC_API_KEY, AI_OLLAMA_MODEL or OPENAI_COMPAT_*
+npm run dev              # API at /mixivivu-clone/api/*
+npm run build && npm start   # production server on port 5290 (Node 22.18+, uses node:sqlite)
 ```
 
-Without a key the assistant still works in a keyword-based basic mode.
-See `docs/architecture.md` → AI assistant.
+Without a provider the assistant answers in keyword-based basic mode.
+Data is stored in `.data/mixivivu.db`. See `docs/ai-assistant/`.
 
 ## Tests
 
 ```bash
+npm run test:unit                 # server + agent tests with a mock LLM
 npx playwright install chromium   # once
-npm run test:e2e
+npm run test:e2e                  # PW_PORT=5299 to use another dev port
 ```
 
-Chat UI tests use a mocked stream, so they never make billed API calls.
+Tests use a mock LLM or mocked streams, so they never make billed API calls.
 To reuse an existing Chromium build instead of downloading one, set
 `PW_CHROMIUM_PATH` to its executable.
 
@@ -54,6 +58,7 @@ stored in this repository.
 - `docs/architecture.md` — structure and data flow
 - `docs/implementation-plan.md` — milestones
 - `docs/progress.md` — progress log, test results, known gaps
+- `docs/ai-assistant/` — assistant architecture, schema, providers, tools, memory, RAG, security, API, testing, progress
 - `docs/reference/` — screenshots of the source site
 
 ## Content and assets
